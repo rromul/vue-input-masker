@@ -4,8 +4,8 @@
       Live placeholder test
     </h1>
     <label for="sum" class="ctl-label color1">Some text:</label>
-    <live-placeholder>
-      <input id="sum" type="text" value="" placeholder="###-###-###">
+    <live-placeholder pattern="+9 (999)-999-99-99">
+      <input id="sum" type="text" value="+7 " placeholder="+7 (###)-###-##-##">
     </live-placeholder>
     <div class="hint-msg color1">от 50 000 до 1 000 000 ₽</div>
   </div>
@@ -27,15 +27,9 @@ export default {
 h3 {
   margin: 40px 0 0;
 }
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.hello {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

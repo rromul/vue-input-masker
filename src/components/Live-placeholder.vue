@@ -5,10 +5,23 @@
 </template>
 
 <script>
+import VMasker from 'vanilla-masker'
+
 export default {
+  props: {
+    pattern: { type: String, default: '' }
+  },
+  data () {
+    return {
+      defaultValue: '',
+      ctx2d: document.createElement("canvas").getContext("2d"),
+      font: "",
+    }
+  },
   mounted() {
     const ph = this.$refs.ph;
     const inp = ph.firstElementChild;
+    this.defaultValue = inp.value;
     const fs = inp.computedStyleMap().getAll("font-size")[0];
     const ff = inp.computedStyleMap().getAll("font-family")[0];
     const fontSize = Math.round(fs.value) + fs.unit;
@@ -25,16 +38,15 @@ export default {
     const inp = ph.firstElementChild;
     inp.removeEventListener("keyup", this.alignPlaceholderText);
   },
-  data() {
-    return {
-      ctx2d: document.createElement("canvas").getContext("2d"),
-      font: "",
-    };
-  },
   methods: {
+    /*eslint no-debugger: "warn"*/
     alignPlaceholderText() {
       const ph = this.$refs.ph;
       const inp = ph.firstElementChild;
+      inp.value = VMasker.toPattern(inp.value, this.pattern)
+      if (!inp.value.startsWith(this.defaultValue)) {
+        inp.value = this.defaultValue
+      }
       const charCount = inp.value.length;
       ph.dataset.placeholderContent = inp.placeholder.substr(charCount);
       ph.style.setProperty(
