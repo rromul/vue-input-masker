@@ -8,6 +8,11 @@
       <input id="sum" type="text" value="+7 " placeholder="+7 (###)-###-##-##">
     </live-placeholder>
     <div class="hint-msg color1">от 50 000 до 1 000 000 ₽</div>
+
+    <label for="date" class="ctl-label color1">Date:</label>
+    <live-placeholder pattern="99.99.9999">
+      <input id="date" type="text" value="" placeholder="##.##.####">
+    </live-placeholder>
   </div>
 </template>
 
