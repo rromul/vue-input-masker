@@ -1,62 +1,81 @@
 <template>
   <div ref="ph" class="live-placeholder">
-    <slot ref="inp"></slot>
+    <slot></slot>
   </div>
 </template>
 
 <script>
-import VMasker from 'vanilla-masker'
+import VMasker from "vanilla-masker";
 
 export default {
   props: {
-    pattern: { type: String, default: '' }
+    pattern: { type: String, default: '' },
+    placeholder: { type: String, default: '' },
+    fixDefault: { type: Boolean, default: true },
+    maskDigit: { type: String, default: '#' },
+    maskAlpha: { type: String, default: '_' },
   },
-  data () {
+  data() {
     return {
       defaultValue: '',
       ctx2d: document.createElement("canvas").getContext("2d"),
-      font: "",
-    }
+      font: '',
+    };
+  },
+  computed: {
+    placeholderEl() {
+      return this.$refs.ph;
+    },
+    inputEl() {
+      return this.placeholderEl.firstElementChild;
+    },
   },
   mounted() {
-    const ph = this.$refs.ph;
-    const inp = ph.firstElementChild;
-    this.defaultValue = inp.value;
-    const fs = inp.computedStyleMap().getAll("font-size")[0];
-    const ff = inp.computedStyleMap().getAll("font-family")[0];
+    this.defaultValue = this.inputEl.value;
+    const fs = this.inputEl.computedStyleMap().getAll("font-size")[0];
+    const ff = this.inputEl.computedStyleMap().getAll("font-family")[0];
     const fontSize = Math.round(fs.value) + fs.unit;
     const fontFamily = ff.toString();
-    ph.style.setProperty("--live-ph-font-size", fontSize);
-    ph.style.setProperty("--live-ph-font-family", fontFamily);
+    this.placeholderEl.style.setProperty("--live-ph-font-size", fontSize);
+    this.placeholderEl.style.setProperty("--live-ph-font-family", fontFamily);
     this.font = `${fontSize} ${fontFamily}`;
     this.ctx2d.font = this.font;
-    inp.addEventListener("keyup", this.alignPlaceholderText);
+    this.inputEl.addEventListener("keyup", this.alignPlaceholderText);
+    this.inputEl.placeholder = this.getPlaceholder()
+
     this.alignPlaceholderText();
   },
   beforeDestroy() {
-    const ph = this.$refs.ph;
-    const inp = ph.firstElementChild;
-    inp.removeEventListener("keyup", this.alignPlaceholderText);
+    this.inputEl.removeEventListener("keyup", this.alignPlaceholderText);
   },
   methods: {
     /*eslint no-debugger: "warn"*/
     alignPlaceholderText() {
-      const ph = this.$refs.ph;
-      const inp = ph.firstElementChild;
-      inp.value = VMasker.toPattern(inp.value, this.pattern)
-      if (!inp.value.startsWith(this.defaultValue)) {
-        inp.value = this.defaultValue
-      }
-      const charCount = inp.value.length;
-      ph.dataset.placeholderContent = inp.placeholder.substr(charCount);
-      ph.style.setProperty(
+      this.changeValue();
+      const charCount = this.inputEl.value.length;
+      this.placeholderEl.dataset.placeholderContent = this.inputEl.placeholder.substr(charCount);
+      this.placeholderEl.style.setProperty(
         "--input-mask-offset",
-        (this.getTextWidth(inp.value) + 0.5 * charCount + 2) + "px"
+        this.getTextWidth(this.inputEl.value) + "px"
       );
     },
     getTextWidth(txt) {
-      return this.ctx2d.measureText(txt).width;
+      return this.ctx2d.measureText(txt).width  + 0.5 * txt.length + 2;
     },
+    changeValue() {
+      this.inputEl.value = VMasker.toPattern(this.inputEl.value, this.pattern);
+      if (this.fixDefault && !this.inputEl.value.startsWith(this.defaultValue)) {
+        this.inputEl.value = this.defaultValue;
+      }
+    },
+    getPlaceholder() {
+      if (this.inputEl.placeholder) {
+        return this.inputEl.placeholder
+      }
+      return this.pattern
+        .replace(/[a-zа-я]/gi, this.maskAlpha)
+        .replace(/\d/gi, this.maskDigit)
+    }
   },
 };
 </script>
