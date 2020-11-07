@@ -11,6 +11,7 @@ export default {
   props: {
     pattern: { type: String, default: '' },
     placeholder: { type: String, default: '' },
+    showPlaceholder: { type: Boolean, default: false },
     fixDefault: { type: Boolean, default: true },
     maskDigit: { type: String, default: '#' },
     maskAlpha: { type: String, default: '_' },
@@ -32,8 +33,9 @@ export default {
   },
   mounted() {
     this.defaultValue = this.inputEl.value;
-    const fs = this.inputEl.computedStyleMap().getAll("font-size")[0];
-    const ff = this.inputEl.computedStyleMap().getAll("font-family")[0];
+    const styleMap = this.inputEl.computedStyleMap()
+    const fs = styleMap?.getAll("font-size")[0] ?? 14;
+    const ff = styleMap?.getAll("font-family")[0] ?? 'Sans serif';
     const fontSize = Math.round(fs.value) + fs.unit;
     const fontFamily = ff.toString();
     this.placeholderEl.style.setProperty("--live-ph-font-size", fontSize);
@@ -41,7 +43,9 @@ export default {
     this.font = `${fontSize} ${fontFamily}`;
     this.ctx2d.font = this.font;
     this.inputEl.addEventListener("keyup", this.alignPlaceholderText);
-    this.inputEl.placeholder = this.getPlaceholder()
+    if (this.showPlaceholder) {
+      this.inputEl.placeholder = this.getPlaceholder()
+    }
 
     this.alignPlaceholderText();
   },
@@ -100,7 +104,7 @@ $border-width: 2px;
     left: $border-width;
     pointer-events: none;
     vertical-align: middle;
-    line-height: $height - 2 * $border-width;
+    line-height: $height - 2*$border-width;
     opacity: 0.4;
     transform: translateX(var(--input-mask-offset, 0));
     font-size: var(--live-ph-font-size);

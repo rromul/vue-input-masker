@@ -4,13 +4,13 @@
       Live placeholder test
     </h1>
     <label for="sum" class="ctl-label color1">Some text:</label>
-    <live-placeholder pattern="+9 (999)-999-99-99" :fix-default="true">
-      <input id="sum" type="text" value="+7 " placeholder="+7 (###)-###-##-##">
+    <live-placeholder pattern="+9 (999) 999-99-99" :fix-default="true">
+      <input id="sum" type="text" value="+7 ">
     </live-placeholder>
     <div class="hint-msg color1">от 50 000 до 1 000 000 ₽</div>
 
     <label for="date" class="ctl-label color1">Date:</label>
-    <live-placeholder pattern="99.99.9999" mask-digit="_">
+    <live-placeholder :show-placeholder="true" pattern="99.99.9999" mask-digit="_">
       <input id="date" type="text" value="">
     </live-placeholder>
   </div>
@@ -27,7 +27,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 h3 {
   margin: 40px 0 0;
