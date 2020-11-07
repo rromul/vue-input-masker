@@ -46,7 +46,7 @@ export default {
     if (this.showPlaceholder) {
       this.inputEl.placeholder = this.getPlaceholder()
     }
-
+    this.inputEl.maxLength = this.pattern.length
     this.alignPlaceholderText();
   },
   beforeDestroy() {
@@ -78,7 +78,7 @@ export default {
       }
       return this.pattern
         .replace(/[a-zа-я]/gi, this.maskAlpha)
-        .replace(/\d/gi, this.maskDigit)
+        .replace(/\d/g, this.maskDigit)
     }
   },
 };

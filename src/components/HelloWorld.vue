@@ -4,7 +4,7 @@
       Live placeholder test
     </h1>
     <label for="sum" class="ctl-label color1">Some text:</label>
-    <live-placeholder pattern="+9 (999) 999-99-99" :fix-default="true">
+    <live-placeholder pattern="+9 (999) 999-99-99" fix-default show-placeholder>
       <input id="sum" type="text" value="+7 ">
     </live-placeholder>
     <div class="hint-msg color1">от 50 000 до 1 000 000 ₽</div>
