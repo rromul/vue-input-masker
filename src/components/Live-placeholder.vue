@@ -54,8 +54,8 @@ export default {
   },
   methods: {
     /*eslint no-debugger: "warn"*/
-    alignPlaceholderText() {
-      this.changeValue();
+    alignPlaceholderText(evt) {
+      this.changeValue(evt);
       const charCount = this.inputEl.value.length;
       this.placeholderEl.dataset.placeholderContent = this.inputEl.placeholder.substr(charCount);
       this.placeholderEl.style.setProperty(
@@ -66,8 +66,13 @@ export default {
     getTextWidth(txt) {
       return this.ctx2d.measureText(txt).width  + 0.5 * txt.length + 2;
     },
-    changeValue() {
+    changeValue(evt) {
       this.inputEl.value = VMasker.toPattern(this.inputEl.value, this.pattern);
+      const nextChar = this.pattern.substr(this.inputEl.value.length, 1)
+      console.log(nextChar, evt)
+      if (nextChar !== '9' && nextChar !== 'A' && !this.isBackspace(evt)) {
+        this.inputEl.value += nextChar;
+      }
       if (this.fixDefault && !this.inputEl.value.startsWith(this.defaultValue)) {
         this.inputEl.value = this.defaultValue;
       }
@@ -79,7 +84,10 @@ export default {
       return this.pattern
         .replace(/[a-zа-я]/gi, this.maskAlpha)
         .replace(/\d/g, this.maskDigit)
-    }
+    },
+    isBackspace(evt) {
+      return (evt.which || evt.keyCode) === 8 || (evt.code ||evt.key) === 'Backspace';
+    },
   },
 };
 </script>
