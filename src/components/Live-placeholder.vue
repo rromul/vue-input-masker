@@ -43,6 +43,8 @@ export default {
     this.font = `${fontSize} ${fontFamily}`;
     this.ctx2d.font = this.font;
     this.inputEl.addEventListener("keyup", this.alignPlaceholderText);
+    this.inputEl.addEventListener("paste", this.onPaste);
+
     if (this.showPlaceholder) {
       this.inputEl.placeholder = this.getPlaceholder()
     }
@@ -63,6 +65,10 @@ export default {
         this.getTextWidth(this.inputEl.value) + "px"
       );
     },
+    onPaste(evt) {
+      console.log(evt.clipboardData.getData('text/plain'))
+      this.inputEl.value = VMasker.toPattern(evt.clipboardData.getData('text/plain'));
+    },
     getTextWidth(txt) {
       return this.ctx2d.measureText(txt).width  + 0.5 * txt.length + 2;
     },
@@ -77,7 +83,8 @@ export default {
         this.inputEl.value = this.defaultValue;
       }
     },
-    getPlaceholder() {
+    getPlaceholder(evt) {
+      console.log(evt)
       if (this.inputEl.placeholder) {
         return this.inputEl.placeholder
       }
