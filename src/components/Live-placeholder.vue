@@ -66,7 +66,6 @@ export default {
       );
     },
     onPaste(evt) {
-      console.log(evt.clipboardData.getData('text/plain'))
       this.inputEl.value = VMasker.toPattern(evt.clipboardData.getData('text/plain'));
     },
     getTextWidth(txt) {
@@ -75,7 +74,6 @@ export default {
     changeValue(evt) {
       this.inputEl.value = VMasker.toPattern(this.inputEl.value, this.pattern);
       const nextChar = this.pattern.substr(this.inputEl.value.length, 1)
-      console.log(nextChar, evt)
       if (nextChar !== '9' && nextChar !== 'A' && !this.isBackspace(evt)) {
         this.inputEl.value += nextChar;
       }
@@ -83,8 +81,7 @@ export default {
         this.inputEl.value = this.defaultValue;
       }
     },
-    getPlaceholder(evt) {
-      console.log(evt)
+    getPlaceholder() {
       if (this.inputEl.placeholder) {
         return this.inputEl.placeholder
       }
