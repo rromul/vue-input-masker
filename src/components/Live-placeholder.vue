@@ -19,7 +19,7 @@ export default {
   data() {
     return {
       defaultValue: '',
-      ctx2d: document.createElement("canvas").getContext("2d"),
+      ctx2d: null,
       font: '',
     };
   },
@@ -32,14 +32,11 @@ export default {
     },
   },
   mounted() {
-    this.defaultValue = this.inputEl.value;
-    const styleMap = this.inputEl.computedStyleMap()
-    const fs = styleMap?.getAll("font-size")[0] ?? 14;
-    const ff = styleMap?.getAll("font-family")[0] ?? 'Sans serif';
-    const fontSize = Math.round(fs.value) + fs.unit;
-    const fontFamily = ff.toString();
-    this.placeholderEl.style.setProperty("--live-ph-font-size", fontSize);
-    this.placeholderEl.style.setProperty("--live-ph-font-family", fontFamily);
+    this.ctx2d = document.createElement('canvas').getContext('2d')
+    this.defaultValue = this.inputEl.value
+    const {fontSize, fontFamily} = this.getFontParams()
+    this.placeholderEl.style.setProperty('--live-ph-font-size', fontSize)
+    this.placeholderEl.style.setProperty('--live-ph-font-family', fontFamily)
     this.font = `${fontSize} ${fontFamily}`;
     this.ctx2d.font = this.font;
     this.inputEl.addEventListener("keyup", this.alignPlaceholderText);
@@ -53,6 +50,7 @@ export default {
   },
   beforeDestroy() {
     this.inputEl.removeEventListener("keyup", this.alignPlaceholderText);
+    this.inputEl.removeEventListener("paste", this.onPaste);
   },
   methods: {
     /*eslint no-debugger: "warn"*/
@@ -88,6 +86,23 @@ export default {
       return this.pattern
         .replace(/[a-zа-я]/gi, this.maskAlpha)
         .replace(/\d/g, this.maskDigit)
+    },
+    getFontParams () {
+      if ('computedStyleMap' in this.inputEl) {
+        const styleMap = this.inputEl.computedStyleMap()
+        const fs = styleMap?.getAll('font-size')[0] ?? 14
+        const ff = styleMap?.getAll('font-family')[0] ?? 'Sans serif'
+        return {
+          fontSize: Math.round(fs.value) + fs.unit,
+          fontFamily: ff.toString(),
+        }
+      }
+      // Safari, IE, FireFox fix
+      const style = window.getComputedStyle(this.inputEl)
+      return {
+        fontSize: style.fontSize,
+        fontFamily: style.fontFamily,
+      }
     },
     isBackspace(evt) {
       return !!evt && ((evt.which || evt.keyCode) === 8 || (evt.code ||evt.key) === 'Backspace');
