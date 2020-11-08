@@ -93,7 +93,7 @@ export default {
         .replace(/\d/g, this.maskDigit)
     },
     isBackspace(evt) {
-      return (evt.which || evt.keyCode) === 8 || (evt.code ||evt.key) === 'Backspace';
+      return !!evt && ((evt.which || evt.keyCode) === 8 || (evt.code ||evt.key) === 'Backspace');
     },
   },
 };
